@@ -6,6 +6,8 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
+import com.clase.modelo.Paciente;
+import com.clase.persisitencia.PacienteDAOMySQL;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -21,11 +23,11 @@ import javafx.scene.control.TextField;
 public class PacientesController implements Initializable{
 
     @FXML 
-    private TextField dnipac, apelpac, nompac, tlfopac, emailpac, dirpac;
+    private TextField dnipac, apelpac, nompac, movilpac, emailpac, dirpac;
     @FXML 
-    private ComboBox<String> cmbpac, locpac;
+    private ComboBox<String> propac, munipac;
     @FXML  
-    private Button btnguardarpac, btnmodifpac;
+    private Button btnguardarpac;
     @FXML 
     private DatePicker nacpac;
 
@@ -39,7 +41,7 @@ public class PacientesController implements Initializable{
 
         // Cuando se selecciona una provincia,
         // cargamos sus municipios
-        cmbpac.setOnAction(e -> cargarMunicipios());
+        propac.setOnAction(e -> cargarMunicipios());
 
         // Comprobar DNI al perder el foco
         dnipac.focusedProperty().addListener((observable, oldValue, newValue) -> {
@@ -65,7 +67,7 @@ public class PacientesController implements Initializable{
         });
 
         //Comprobar movil
-        tlfopac.focusedProperty().addListener((observable, oldValue, newValue) -> {
+        movilpac.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 comprobarMovil();
             }
@@ -136,16 +138,16 @@ public class PacientesController implements Initializable{
     }
 
     private void comprobarMovil(){
-        String movil =tlfopac.getText().trim();
+        String movil =movilpac.getText().trim();
         if(movil.isEmpty()){
             return;
         }
         if(validarMovil(movil)){
-            tlfopac.setStyle("");
-            tlfopac.setText(movil);
+            movilpac.setStyle("");
+            movilpac.setText(movil);
         }else{
-            tlfopac.setStyle("-fx-border-color: red;");
-            tlfopac.setText("");
+            movilpac.setStyle("-fx-border-color: red;");
+            movilpac.setText("");
         }
     }
 
@@ -180,7 +182,7 @@ public class PacientesController implements Initializable{
 
             // Obtenemos el nombre de la provincia
             // y lo añadimos al ComboBox
-            cmbpac.getItems().add(
+            propac.getItems().add(
                     p.get("nm").getAsString()
             );
         }
@@ -203,7 +205,7 @@ public class PacientesController implements Initializable{
         JsonArray municipios = json.getAsJsonArray("municipios");
 
         // Obtenemos el nombre de la provincia seleccionada
-        String nombreProvincia = cmbpac.getValue();
+        String nombreProvincia = propac.getValue();
 
         // Variable donde guardaremos el código de la provincia
         String idProvincia = "";
@@ -226,7 +228,7 @@ public class PacientesController implements Initializable{
 
         // Eliminamos los municipios que pudiera haber
         // de una selección anterior muy importante sino agrega municipios
-        locpac.getItems().clear();
+        munipac.getItems().clear();
 
         // Recorremos todos los municipios
         for (var municipio : municipios) {
@@ -238,7 +240,7 @@ public class PacientesController implements Initializable{
 
                 // Si pertenecen a la provincia,
                 // añadimos su nombre al ComboBox
-                locpac.getItems().add(
+                munipac.getItems().add(
                         m.get("nm").getAsString()
                 );
             }
@@ -256,29 +258,28 @@ public class PacientesController implements Initializable{
         String dni=dnipac.getText();        
         String apellidos=apelpac.getText();
         String nombre=nompac.getText();
-
         LocalDate fechaNacimiento=nacpac.getValue();
-
-        String telefono=tlfopac.getText();
+        String movil=movilpac.getText();
         String email=emailpac.getText();
         String direccion=dirpac.getText();
-
-        String provincia=cmbpac.getValue();
-        String localidad=locpac.getValue();
+        String provincia=propac.getValue();
+        String municipio=munipac.getValue();
 
         System.out.println("----------------PACIENTE-------------");
         System.out.println("DNI: "+dni);
         System.out.println("Apellidos: "+apellidos);
         System.out.println("Nombre: "+nombre);
         System.out.println("Fecha Nacimiento: "+fechaNacimiento);
-        System.out.println("Telefono: "+telefono);
+        System.out.println("Telefono: "+movil);
         System.out.println("Email: "+email);
         System.out.println("Direccion: "+direccion);
         System.out.println("Provincia: "+provincia);
-        System.out.println("Localidad: "+localidad);
+        System.out.println("Localidad: "+municipio);
         System.out.println("--------------------------------------");
 
-
+        Paciente paciente= new Paciente(dni, nombre, apellidos, movil, direccion, fechaNacimiento, email, provincia, municipio);
+        PacienteDAOMySQL dao = new PacienteDAOMySQL();
+        dao.guardarPaciente(paciente);
 
     }
 
