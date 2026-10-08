@@ -5,6 +5,8 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -12,20 +14,20 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" spacing="20.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.clase.PacientesController">
+<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" spacing="20.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.clase.PacientesController">
    <padding>
-      <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+      <Insets bottom="25.0" top="25.0" />
    </padding>
    <children>
 
-            <Label alignment="CENTER" prefHeight="52.0" prefWidth="995.0" style="-fx-background-color: #7fffd4;" text="Xestión Pacientes" textFill="#141414">
+            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="40.0" style="-fx-background-color: #7fffd4;" text="Xestión Pacientes" textFill="#141414">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
 
       <!-- Fila 1: DNI, Apellidos, Nombre -->
-      <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="765.0" spacing="10.0">
+      <HBox alignment="CENTER" spacing="10.0">
          <children>
             <Label text="DNI:" />
             <TextField fx:id="dnipac" prefWidth="120.0" />
@@ -43,12 +45,12 @@
                </HBox.margin>
             </Label>
             <TextField fx:id="nompac" prefWidth="180.0" />
-            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false">
+            <Button fx:id="btnlimpiar" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#limpiarFormulario" prefHeight="31.0" prefWidth="39.0">
                <HBox.margin>
-                  <Insets left="50.0" />
+                  <Insets left="5.0" />
                </HBox.margin>
                <graphic>
-                  <ImageView fitHeight="39.0" fitWidth="69.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/recargar.png" />
                      </image>
@@ -57,12 +59,12 @@
             </Button>
          </children>
          <VBox.margin>
-            <Insets left="50.0" right="50.0" />
+            <Insets />
          </VBox.margin>
       </HBox>
 
       <!-- Fila 2: Fecha Nacimiento, Teléfono, Mail -->
-      <HBox alignment="CENTER_LEFT" spacing="10.0">
+      <HBox alignment="CENTER" spacing="10.0">
          <children>
             <Label text="Fecha Nacimiento:" />
             <DatePicker fx:id="nacpac" prefWidth="140.0" />
@@ -82,12 +84,12 @@
             <TextField fx:id="emailpac" prefHeight="25.0" prefWidth="287.0" />
          </children>
          <VBox.margin>
-            <Insets left="50.0" right="50.0" />
+            <Insets />
          </VBox.margin>
       </HBox>
 
       <!-- Fila 3: Dirección, Provincia, Localidad -->
-      <HBox alignment="CENTER_LEFT" spacing="10.0">
+      <HBox alignment="CENTER" spacing="10.0">
          <children>
             <Label text="Dirección:" />
             <TextField fx:id="dirpac" prefWidth="280.0" />
@@ -112,13 +114,25 @@
       <HBox alignment="CENTER" spacing="25.0">
          <children>
             <Button fx:id="btnguardarpac" mnemonicParsing="false" onAction="#guardarPaciente" prefWidth="90.0" text="Guardar" />
-            <Button fx:id="btnmodifpac" mnemonicParsing="false" prefWidth="90.0" text="Modificar" />
             <Button fx:id="btndelpac" mnemonicParsing="false" prefWidth="90.0" text="Eliminar" />
          </children>
          <VBox.margin>
-            <Insets top="15.0" />
+            <Insets />
          </VBox.margin>
       </HBox>
+      <TableView fx:id="tablaPacientes" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="450.0" prefWidth="1100.0" style="-fx-background-color: #7fffd4;">
+        <columns>
+          <TableColumn fx:id="coldnipac" editable="false" prefWidth="140.0" style="-fx-alignment: CENTER;" text="DNI" />
+          <TableColumn fx:id="colapelpac" editable="false" prefWidth="200.0" text="APELLIDOS" />
+            <TableColumn fx:id="colnompac" editable="false" prefWidth="220.0" text="NOMBRE" />
+            <TableColumn fx:id="colmovilpac" prefWidth="120.0" style="-fx-alignment: CENTER;" text="MOVIL" />
+            <TableColumn fx:id="colpropac" editable="false" prefWidth="170.0" text="PROVINCIA" />
+            <TableColumn fx:id="colmunipac" editable="false" prefWidth="260.0" text="MUNICIPIO" />
+        </columns>
+         <VBox.margin>
+            <Insets left="50.0" right="50.0" />
+         </VBox.margin>
+      </TableView>
 
    </children>
 </VBox>

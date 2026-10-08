@@ -4,10 +4,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import com.clase.modelo.Paciente;
-import com.clase.persisitencia.PacienteDAOMySQL;
+import com.clase.persistencia.PacienteDAOMySQL;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -17,7 +18,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+
 
 
 public class PacientesController implements Initializable{
@@ -27,21 +32,31 @@ public class PacientesController implements Initializable{
     @FXML 
     private ComboBox<String> propac, munipac;
     @FXML  
-    private Button btnguardarpac;
+    private Button btnguardarpac, btnlimpiar;
     @FXML 
     private DatePicker nacpac;
+    @FXML 
+    private TableView<Paciente> tablaPacientes;
+    @FXML 
+    private TableColumn<Paciente, String> coldnipac;
+    @FXML 
+    private TableColumn<Paciente, String> colapelpac;
+    @FXML 
+    private TableColumn<Paciente, String> colnompac;
+    @FXML 
+    private TableColumn<Paciente, String> colmovilpac;
+    @FXML 
+    private TableColumn<Paciente, String> colpropac;
+    @FXML 
+    private TableColumn<Paciente, String> colmunipac;
 
     
     
     @Override 
     public void initialize(URL url, ResourceBundle rb){
 
-         // Cargamos las provincias al iniciar la ventana
-        cargarProvincias();
 
-        // Cuando se selecciona una provincia,
-        // cargamos sus municipios
-        propac.setOnAction(e -> cargarMunicipios());
+        
 
         // Comprobar DNI al perder el foco
         dnipac.focusedProperty().addListener((observable, oldValue, newValue) -> {
@@ -72,8 +87,23 @@ public class PacientesController implements Initializable{
                 comprobarMovil();
             }
         });
-    
+
+        cargarProvincias();
+
+        propac.setOnAction(e -> cargarMunicipios());
+
+        cargarPacientes();
+
+        coldnipac.setCellValueFactory(new PropertyValueFactory<>("dni"));
+        colapelpac.setCellValueFactory(new PropertyValueFactory<>("apellidos"));
+        colnompac.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        colmovilpac.setCellValueFactory(new PropertyValueFactory<>("movil"));
+        colpropac.setCellValueFactory(new PropertyValueFactory<>("provincia"));
+        colmunipac.setCellValueFactory(new PropertyValueFactory<>("municipio")); 
+        
     }
+
+    
 
     //Validar dni
 
@@ -249,9 +279,6 @@ public class PacientesController implements Initializable{
 
 
 
-
-
-
     @FXML 
     private void guardarPaciente(){
 
@@ -281,6 +308,42 @@ public class PacientesController implements Initializable{
         PacienteDAOMySQL dao = new PacienteDAOMySQL();
         dao.guardarPaciente(paciente);
 
+        cargarPacientes();
     }
+ 
+
+
+    @FXML 
+    private void cargarPacientes(){
+
+        PacienteDAOMySQL dao = new PacienteDAOMySQL();
+        
+        List<Paciente> pacientes = dao.cargarPacientes();
+
+        tablaPacientes.getItems().setAll(pacientes);
+
+    }
+
+
+    @FXML
+    private void limpiarFormulario() {
+
+        dnipac.clear();
+        apelpac.clear();
+        nompac.clear();
+        movilpac.clear();
+        emailpac.clear();
+        dirpac.clear();
+
+        nacpac.setValue(null);
+
+        propac.setValue(null);
+        munipac.setValue(null);
+
+        dnipac.setStyle("");
+        movilpac.setStyle("");
+}
+
+
 
 }

@@ -1,7 +1,8 @@
 com\clase\modelo\Paciente.class
+com\clase\persistencia\PacienteDAOMySQL.class
 module-info.class
-com\clase\persisitencia\PacienteDAO.class
-com\clase\persisitencia\PacienteDAOMySQL.class
+com\clase\persistencia\PacienteDAO.class
 com\clase\PacientesController.class
+com\clase\persistencia\ConexionMySQL.class
 com\clase\App.class
-com\clase\persisitencia\ConexionMySQL.class
+com\clase\persistencia\ConexionMySQL$PacienteDAO.class

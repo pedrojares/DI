@@ -12,6 +12,7 @@ public class Paciente {
     private String propac;
     private String munipac;
 
+    //modelo bbdd
     public Paciente(String dnipac, String apelpac, String nompac,
             String movilpac, String emailpac, LocalDate nacpac,
             String dirpac, String propac, String munipac) {
@@ -22,6 +23,17 @@ public class Paciente {
         this.movilpac = movilpac;
         this.emailpac = emailpac;
         this.dirpac = dirpac;
+        this.propac = propac;
+        this.munipac = munipac;
+    }
+
+    //modelo tabla
+    public Paciente(String dnipac, String apelpac, String nompac,
+            String movilpac, String propac, String munipac) {
+        this.dnipac = dnipac;
+        this.apelpac = apelpac;
+        this.nompac = nompac;
+        this.movilpac = movilpac;
         this.propac = propac;
         this.munipac = munipac;
     }

@@ -22,6 +22,7 @@ public class App extends Application {
         Scene scene = new Scene(loader.load(), 1280, 800);
         stage.setTitle("Sanitarios Teis");
         stage.setScene(scene);
+        stage.setMaximized(true);
         stage.show();
 
     }
