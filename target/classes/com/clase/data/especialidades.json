@@ -1,0 +1,124 @@
+{
+  "especialidades": [
+    {
+      "id": 1,
+      "nombre": "Medicina de Familia"
+    },
+    {
+      "id": 2,
+      "nombre": "Medicina Interna"
+    },
+    {
+      "id": 3,
+      "nombre": "Cardiología"
+    },
+    {
+      "id": 4,
+      "nombre": "Dermatología"
+    },
+    {
+      "id": 5,
+      "nombre": "Endocrinología y Nutrición"
+    },
+    {
+      "id": 6,
+      "nombre": "Gastroenterología"
+    },
+    {
+      "id": 7,
+      "nombre": "Ginecología y Obstetricia"
+    },
+    {
+      "id": 8,
+      "nombre": "Hematología"
+    },
+    {
+      "id": 9,
+      "nombre": "Nefrología"
+    },
+    {
+      "id": 10,
+      "nombre": "Neumología"
+    },
+    {
+      "id": 11,
+      "nombre": "Neurología"
+    },
+    {
+      "id": 12,
+      "nombre": "Oftalmología"
+    },
+    {
+      "id": 13,
+      "nombre": "Oncología"
+    },
+    {
+      "id": 14,
+      "nombre": "Otorrinolaringología"
+    },
+    {
+      "id": 15,
+      "nombre": "Pediatría"
+    },
+    {
+      "id": 16,
+      "nombre": "Psiquiatría"
+    },
+    {
+      "id": 17,
+      "nombre": "Traumatología y Cirugía Ortopédica"
+    },
+    {
+      "id": 18,
+      "nombre": "Urología"
+    },
+    {
+      "id": 19,
+      "nombre": "Cirugía General"
+    },
+    {
+      "id": 20,
+      "nombre": "Cirugía Cardiovascular"
+    },
+    {
+      "id": 21,
+      "nombre": "Cirugía Plástica"
+    },
+    {
+      "id": 22,
+      "nombre": "Neurocirugía"
+    },
+    {
+      "id": 23,
+      "nombre": "Reumatología"
+    },
+    {
+      "id": 24,
+      "nombre": "Alergología"
+    },
+    {
+      "id": 25,
+      "nombre": "Anestesiología y Reanimación"
+    },
+    {
+      "id": 26,
+      "nombre": "Radiología"
+    },
+    {
+      "id": 27,
+      "nombre": "Medicina Física y Rehabilitación"
+    },
+    {
+      "id": 28,
+      "nombre": "Medicina Preventiva y Salud Pública"
+    },
+    {
+      "id": 29,
+      "nombre": "Urgencias"
+    },
+    {
+      "id": 30,
+      "nombre": "Geriatría"
+    }
+  ]
+}

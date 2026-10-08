@@ -32,7 +32,7 @@ public class PacientesController implements Initializable{
     @FXML 
     private ComboBox<String> propac, munipac;
     @FXML  
-    private Button btnguardarpac, btnlimpiar;
+    private Button btnguardarpac, btnlimpiar, btnBuscarPac, btndelpac;
     @FXML 
     private DatePicker nacpac;
     @FXML 
@@ -49,6 +49,8 @@ public class PacientesController implements Initializable{
     private TableColumn<Paciente, String> colpropac;
     @FXML 
     private TableColumn<Paciente, String> colmunipac;
+
+    boolean pacienteExiste = false;
 
     
     
@@ -100,8 +102,18 @@ public class PacientesController implements Initializable{
         colmovilpac.setCellValueFactory(new PropertyValueFactory<>("movil"));
         colpropac.setCellValueFactory(new PropertyValueFactory<>("provincia"));
         colmunipac.setCellValueFactory(new PropertyValueFactory<>("municipio")); 
-        
+      
+        tablaPacientes.getSelectionModel()
+        .selectedItemProperty()
+        .addListener((observable, anterior, nuevo) -> {
+            
+            if(nuevo != null){
+                cargarPaciente();
+            }
+        });
     }
+
+    
 
     
 
@@ -278,7 +290,6 @@ public class PacientesController implements Initializable{
     }
 
 
-
     @FXML 
     private void guardarPaciente(){
 
@@ -304,14 +315,22 @@ public class PacientesController implements Initializable{
         System.out.println("Localidad: "+municipio);
         System.out.println("--------------------------------------");
 
-        Paciente paciente= new Paciente(dni, nombre, apellidos, movil, direccion, fechaNacimiento, email, provincia, municipio);
-        PacienteDAOMySQL dao = new PacienteDAOMySQL();
-        dao.guardarPaciente(paciente);
+        Paciente paciente = new Paciente(dni, nombre, apellidos, movil, direccion, fechaNacimiento, email, provincia, municipio);
+        
+        if(pacienteExiste){
+            PacienteDAOMySQL dao = new PacienteDAOMySQL();
+            dao.modificarPaciente(paciente.getDni(), paciente);
+            pacienteExiste
+            = false;
+            buscaPacdni();
 
+        }else{
+            PacienteDAOMySQL dao = new PacienteDAOMySQL();
+            dao.guardarPaciente(paciente);
+        }
+        
         cargarPacientes();
     }
- 
-
 
     @FXML 
     private void cargarPacientes(){
@@ -323,7 +342,6 @@ public class PacientesController implements Initializable{
         tablaPacientes.getItems().setAll(pacientes);
 
     }
-
 
     @FXML
     private void limpiarFormulario() {
@@ -342,8 +360,89 @@ public class PacientesController implements Initializable{
 
         dnipac.setStyle("");
         movilpac.setStyle("");
-}
+    }
 
+    @FXML
+    private void eliminarPaciente(){
+
+    Paciente seleccionado = tablaPacientes
+                .getSelectionModel()
+                .getSelectedItem();
+
+        if(seleccionado == null){
+            return;
+        }
+        PacienteDAOMySQL dao = new PacienteDAOMySQL();
+        dao.eliminarPaciente(seleccionado.getDni());
+
+        //Recargamos la tabla de pacientes
+        cargarPacientes();
+    
+    }
+
+    @FXML 
+    private void cargarPaciente(){
+        Paciente pacienteSelect = tablaPacientes
+                    .getSelectionModel()
+                    .getSelectedItem();
+
+        if(pacienteSelect == null){
+            return;
+        } else {
+            pacienteExiste = true;
+
+        }
+
+        PacienteDAOMySQL dao = new PacienteDAOMySQL();
+
+        Paciente paciente = dao.buscarPaciente(pacienteSelect.getDni());
+
+        if(paciente == null){
+            return;
+        }
+
+        dnipac.setText(paciente.getDni());
+        apelpac.setText(paciente.getApellidos());
+        nompac.setText(paciente.getNombre());
+        movilpac.setText(paciente.getMovil());
+        emailpac.setText(paciente.getEmail());
+        nacpac.setValue(paciente.getNacimiento());
+        dirpac.setText(paciente.getDireccion());
+        propac.setValue(paciente.getProvincia());
+        cargarMunicipios();
+        munipac.setValue(paciente.getMunicipio());
+
+    }
+
+
+
+    @FXML 
+    private void buscaPacdni(){
+        
+
+        PacienteDAOMySQL dao = new PacienteDAOMySQL();
+        Paciente paciente = dao.buscaPacdni(dnipac.getText());
+        
+        if(paciente == null){
+            return;
+        }else{
+            pacienteExiste= true;
+        }
+
+        dnipac.setText(paciente.getDni());
+        apelpac.setText(paciente.getApellidos());
+        nompac.setText(paciente.getNombre());
+        movilpac.setText(paciente.getMovil());
+        emailpac.setText(paciente.getEmail());
+        nacpac.setValue(paciente.getNacimiento());
+        dirpac.setText(paciente.getDireccion());
+        propac.setValue(paciente.getProvincia());
+        cargarMunicipios();
+        munipac.setValue(paciente.getMunicipio());
+
+        
+    }
+    
 
 
 }

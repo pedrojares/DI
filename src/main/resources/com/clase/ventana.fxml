@@ -1,31 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/13" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="838.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.clase.VentanaController">
    <children>
-      <TabPane layoutX="10.0" layoutY="10.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <MenuBar layoutY="-1.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="26.0" prefWidth="1280.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <menus>
+          <Menu fx:id="abrirVentana" mnemonicParsing="false" onAction="#abrirDir" text="Archivo">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Abrir" />
+                  <MenuItem mnemonicParsing="false" text="Guardar" />
+                  <MenuItem fx:id="menuSalir" mnemonicParsing="false" onAction="#salirApp" text="Salir">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Informes">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Informe Pacientes" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Acerca">
+            <items>
+              <MenuItem fx:id="acercade" mnemonicParsing="false" onAction="#mostrarAcercade" text="Acerca de" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <ToolBar layoutY="25.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="43.0" prefWidth="116.0">
+        <items>
+          <Button fx:id="btnAbrirdir" mnemonicParsing="false" onAction="#abrirDir" prefHeight="28.0" prefWidth="32.0">
+               <graphic>
+                  <ImageView fitHeight="35.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../img/carpeta.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Separator orientation="VERTICAL" prefHeight="19.0" prefWidth="0.0" />
+            <Button fx:id="btnToolsalir" mnemonicParsing="false" prefHeight="33.0" prefWidth="36.0">
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../img/salir.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+        </items>
+      </ToolBar>
+      <TabPane layoutY="66.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="736.0" prefWidth="1280.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="-2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="66.0">
          <tabs>
             <Tab fx:id="panpacientes" text="Pacientes">
                <content>
                   <StackPane prefHeight="150.0" prefWidth="200.0" />
                </content>
                <content>
-                  <StackPane prefHeight="150.0" prefWidth="200.0">
+                  <StackPane minHeight="-Infinity" prefHeight="744.0" prefWidth="1280.0">
                      <children>
                         <fx:include source="pacientes.fxml" />
                      </children>
                   </StackPane>
                </content>
             </Tab>
-            <Tab fx:id="pandoctores" text="Doctor">
+            <Tab fx:id="pandoctores" text="Doctores">
                <content>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0" />
                </content>
+            </Tab>
+            <Tab text="Citas">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
             </Tab>
          </tabs>
       </TabPane>

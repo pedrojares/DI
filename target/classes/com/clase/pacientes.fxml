@@ -31,6 +31,15 @@
          <children>
             <Label text="DNI:" />
             <TextField fx:id="dnipac" prefWidth="120.0" />
+            <Button fx:id="btnBuscarPac" mnemonicParsing="false" onAction="#buscaPacdni">
+               <graphic>
+                  <ImageView fitHeight="21.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../img/busqueda-de-lupa.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
 
             <Label text="Apellidos:">
                <HBox.margin>
@@ -114,7 +123,7 @@
       <HBox alignment="CENTER" spacing="25.0">
          <children>
             <Button fx:id="btnguardarpac" mnemonicParsing="false" onAction="#guardarPaciente" prefWidth="90.0" text="Guardar" />
-            <Button fx:id="btndelpac" mnemonicParsing="false" prefWidth="90.0" text="Eliminar" />
+            <Button fx:id="btndelpac" mnemonicParsing="false" onAction="#eliminarPaciente" prefWidth="90.0" text="Eliminar" />
          </children>
          <VBox.margin>
             <Insets />
