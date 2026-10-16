@@ -6,8 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.clase.modelo.Doctor;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 public class DoctorDAOMySQL implements DoctorDAO{
 
@@ -15,22 +19,26 @@ public class DoctorDAOMySQL implements DoctorDAO{
     public void guardarDoctor(Doctor doctor){
         
         String sql = "INSERT INTO doctores"
-            + "(iddoc, apeldoc, nomdoc, movildoc, maildoc, nacdoc, "
-            + " dirdoc, prodoc, muidoc) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            + "(apeldoc, nomdoc, movildoc, maildoc, espedoc, coledoc) "
+            + "VALUES (?, ?, ?, ?, ?, ?)";
 
         try(Connection conexion = ConexionMySQL.getConexion();
-            PreparedStatement ps= conexion.prepareStatement(sql)){
+            PreparedStatement ps = conexion.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)){
 
-                ps.setString(1, doctor.getId());
-                ps.setString(2, doctor.getApellidos());
-                ps.setString(3, doctor.getNombre());
-                ps.setString(4, doctor.getMovil());
-                ps.setString(5, doctor.getEmail());
-                
-
+                ps.setString(1, doctor.getApellidos());
+                ps.setString(2, doctor.getNombre());
+                ps.setString(3, doctor.getMovil());
+                ps.setString(4, doctor.getEmail());
+                ps.setString(5, doctor.getEspecialidad());
+                ps.setBoolean(6, doctor.getColegiado());
 
                 ps.executeUpdate();
+
+                try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        doctor.setId(generatedKeys.getString(1));
+                    }
+                }
 
                 System.out.println("Doctor guardado correctamente");
 
@@ -49,9 +57,9 @@ public class DoctorDAOMySQL implements DoctorDAO{
 
         // Solo obtenemos los campos que necesitamos para la tabla
         String sql = "SELECT iddoc, apeldoc, nomdoc, movildoc, "
-                + "maildoc, nacdoc, dirdoc, prodoc, muidoc "
+                + "maildoc, espedoc, coledoc "
                 + "FROM doctores "
-                + "ORDER BY apeldoc, nomdoc     ";
+                + "ORDER BY apeldoc, nomdoc";
 
         try (Connection conexion = ConexionMySQL.getConexion();
                 PreparedStatement ps = conexion.prepareStatement(sql);
@@ -67,17 +75,51 @@ public class DoctorDAOMySQL implements DoctorDAO{
                     rs.getString("movildoc"),
                     rs.getString("maildoc"),
                     rs.getString("espedoc"),
-                    false // coledoc    
+                    rs.getBoolean("coledoc")
                 );
 
                 doctores.add(doctor);
-                System.out.println("hola");
             }
 
         } catch (SQLException e) {
             System.out.println("Error al cargar los doctores: " + e.getMessage());
         }
         //devuelve los doctores que hay en la bbdd
+        return doctores;
+    }
+
+    @Override
+    public List<Doctor> buscarDoctoresPorEspecialidad(String especialidad) {
+
+        List<Doctor> doctores = new ArrayList<>();
+        String sql = "SELECT iddoc, apeldoc, nomdoc, movildoc, "
+                + "maildoc, espedoc, coledoc "
+                + "FROM doctores "
+                + "WHERE espedoc = ? "
+                + "ORDER BY apeldoc, nomdoc";
+
+        try (Connection conexion = ConexionMySQL.getConexion();
+                PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setString(1, especialidad);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Doctor doctor = new Doctor(
+                            rs.getString("iddoc"),
+                            rs.getString("apeldoc"),
+                            rs.getString("nomdoc"),
+                            rs.getString("movildoc"),
+                            rs.getString("maildoc"),
+                            rs.getString("espedoc"),
+                            rs.getBoolean("coledoc"));
+                    doctores.add(doctor);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al buscar doctores por especialidad: " + e.getMessage());
+        }
+
         return doctores;
     }
 
@@ -100,43 +142,7 @@ public class DoctorDAOMySQL implements DoctorDAO{
 
     }
 
-    // Buscar un doctor por ID
-    public Doctor buscarDoctor(String id) {
-
-        String sql = "SELECT iddoc, apeldoc, nomdoc, movildoc, "
-                + " maildoc, nacdoc, dirdoc, prodoc, muidoc "
-                + " FROM doctores "
-                + " WHERE iddoc = ?";
-
-        try (Connection conexion = ConexionMySQL.getConexion();
-                PreparedStatement ps = conexion.prepareStatement(sql)) {
-
-            ps.setString(1, id);
-
-            try (ResultSet rs = ps.executeQuery()) {
-
-                if (rs.next()) {
-
-                    Doctor doctor = new Doctor(
-                        rs.getString("iddoc"),
-                        rs.getString("apeldoc"),
-                        rs.getString("nomdoc"),
-                        rs.getString("movildoc"),
-                        rs.getString("maildoc"),
-                        rs.getString("espedoc"),
-                        false // coledoc    
-                    );
-
-                    return doctor;
-                }
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Error al buscar el doctor: " + e.getMessage());
-        }
-
-        return null;
-    }
+    
 
     
     public void modificarDoctor(String id, Doctor doctor) {
@@ -146,10 +152,8 @@ public class DoctorDAOMySQL implements DoctorDAO{
                 + "nomdoc = ?, "
                 + "movildoc = ?, "
                 + "maildoc = ?, "
-                + "nacdoc = ?, "
-                + "dirdoc = ?, "
-                + "prodoc = ?, "
-                + "muidoc = ? "
+                + "espedoc = ?, "
+                + "coledoc = ? "
                 + "WHERE iddoc = ?";
 
         try (Connection conexion = ConexionMySQL.getConexion();
@@ -159,15 +163,21 @@ public class DoctorDAOMySQL implements DoctorDAO{
             ps.setString(2, doctor.getNombre());
             ps.setString(3, doctor.getMovil());
             ps.setString(4, doctor.getEmail());
-            
+            ps.setString(5, doctor.getEspecialidad());
+            ps.setBoolean(6, doctor.getColegiado());
+            ps.setString(7, id);
 
-            // ID original para localizar el doctor
-            ps.setString(9, id );
-
-            ps.executeUpdate();
-
-            System.out.println("Doctor modificado correctamente.");
-
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmación");
+            alert.setHeaderText(null);
+            alert.setContentText("¿Está seguro de que desea modificar el doctor?");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                ps.executeUpdate();
+                System.out.println("Doctor modificado correctamente.");
+            }else {
+                return;
+            }
         } catch (SQLException e) {
             System.out.println("Error al modificar el doctor: " + e.getMessage());
         }
@@ -177,9 +187,9 @@ public class DoctorDAOMySQL implements DoctorDAO{
     public Doctor buscaDoctor(String id) {
 
         String sql = "SELECT iddoc, apeldoc, nomdoc, movildoc, "
-                + " maildoc, nacdoc, dirdoc, prodoc, muidoc "
-                + " FROM doctores "
-                + " WHERE iddoc = ?";
+                + "maildoc, espedoc, coledoc "
+                + "FROM doctores "
+                + "WHERE iddoc = ?";
 
         try (Connection conexion = ConexionMySQL.getConexion();
                 PreparedStatement ps = conexion.prepareStatement(sql)) {
@@ -195,10 +205,10 @@ public class DoctorDAOMySQL implements DoctorDAO{
                         rs.getString("apeldoc"),
                         rs.getString("nomdoc"),
                         rs.getString("movildoc"),
-                        rs.getString("maildoc"),
                         rs.getString("espedoc"),
-                        false // coledoc
+                        rs.getBoolean("coledoc")
                     );
+                    doctor.setEmail(rs.getString("maildoc"));
                     return doctor;
                 }
             }
@@ -209,5 +219,46 @@ public class DoctorDAOMySQL implements DoctorDAO{
 
         return null;
     }
+
+
+    public List<Doctor> cargarDoctoresEspec(String espedoc) {
+
+        List<Doctor> doctores = new ArrayList<>();
+        String sql = "SELECT iddoc, apeldoc, nomdoc, movildoc, "
+                + "maildoc, espedoc, coledoc "
+                + "FROM doctores "
+                + "WHERE espedoc = ? "
+                + "ORDER BY apeldoc, nomdoc";
+
+        try (Connection conexion = ConexionMySQL.getConexion();
+                PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setString(1, espedoc);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Doctor doctor = new Doctor(
+                            rs.getString("iddoc"),
+                            rs.getString("apeldoc"),
+                            rs.getString("nomdoc"),
+                            rs.getString("movildoc"),
+                            rs.getString("maildoc"),
+                            rs.getString("espedoc"),
+                            rs.getBoolean("coledoc"));
+                    doctores.add(doctor);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al buscar doctores por especialidad: " + e.getMessage());
+        }
+
+        return doctores;
+
+    }
+
+
+
+
+    
     
 }

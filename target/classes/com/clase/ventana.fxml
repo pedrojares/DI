@@ -68,9 +68,6 @@
          <tabs>
             <Tab fx:id="panpacientes" text="Pacientes">
                <content>
-                  <StackPane prefHeight="150.0" prefWidth="200.0" />
-               </content>
-               <content>
                   <StackPane minHeight="-Infinity" prefHeight="744.0" prefWidth="1280.0">
                      <children>
                         <fx:include source="pacientes.fxml" />
@@ -80,7 +77,11 @@
             </Tab>
             <Tab fx:id="pandoctores" text="Doctores">
                <content>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+                  <StackPane prefHeight="150.0" prefWidth="200.0">
+                     <children>
+                        <fx:include source="doctores.fxml" />
+                     </children>
+                  </StackPane>
                </content>
             </Tab>
             <Tab text="Citas">

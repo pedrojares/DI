@@ -32,7 +32,7 @@ public class Doctor {
         this.nomdoc = nomdoc;
         this.movildoc = movildoc;
         this.espedoc = espedoc;
-
+        
     }
 
     public String getId() {
