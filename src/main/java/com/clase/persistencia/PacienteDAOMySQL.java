@@ -12,7 +12,7 @@ import com.clase.modelo.Paciente;
 public class PacienteDAOMySQL implements PacienteDAO{
 
     @Override 
-    public void guardarPaciente(Paciente paciente){
+    public void guardarPaciente(Paciente paciente) throws SQLException {
         
         String sql = "INSERT INTO pacientes"
             + "(dnipac, apelpac, nompac, movilpac, emailpac, nacpac, "
@@ -33,19 +33,11 @@ public class PacienteDAOMySQL implements PacienteDAO{
                 ps.setString(9, paciente.getMunicipio());
 
                 ps.executeUpdate();
-
-                System.out.println("Paciente guardado correctamente");
-
-            }catch(SQLException e){
-                System.out.println("Error al guardar el paciente: "+ e.getMessage());
-
-            }
-
-
+        }
     }
     // seleccionar pacientes de la bbdd
      @Override
-    public List<Paciente> cargarPacientes() {
+    public List<Paciente> cargarPacientes() throws SQLException {
 
         List<Paciente> pacientes = new ArrayList<>();
 
@@ -69,20 +61,15 @@ public class PacienteDAOMySQL implements PacienteDAO{
                         rs.getString("movilpac"),
                         rs.getString("propac"),
                         rs.getString("munipac"));
-                        System.out.println(paciente);
 
                 pacientes.add(paciente);
-                System.out.println("hola");
             }
 
-        } catch (SQLException e) {
-            System.out.println("Error al cargar los pacientes: " + e.getMessage());
         }
-        //devuelve los pacientes que hay en la bbdd
         return pacientes;
     }
 
-    public void eliminarPaciente(String dni){
+    public int eliminarPaciente(String dni) throws SQLException {
 
         String sql = "DELETE FROM pacientes WHERE dnipac = ?";
 
@@ -91,18 +78,12 @@ public class PacienteDAOMySQL implements PacienteDAO{
                 
                 ps.setString(1, dni);
 
-                ps.executeUpdate();
-
-                System.out.println("Paciente eliminado correctamente.");
-            } catch(SQLException e){
-                System.out.println("Error al eliminar el paciente." + e.getMessage());
+                return ps.executeUpdate();
             } 
-    
-
     }
 
     // Buscar un paciente por DNI
-    public Paciente buscarPaciente(String dni) {
+    public Paciente buscarPaciente(String dni) throws SQLException {
 
         String sql = "SELECT dnipac, apelpac, nompac, movilpac, "
                 + " emailpac, nacpac, dirpac, propac, munipac "
@@ -133,15 +114,12 @@ public class PacienteDAOMySQL implements PacienteDAO{
                 }
             }
 
-        } catch (SQLException e) {
-            System.out.println("Error al buscar el paciente: " + e.getMessage());
         }
-
         return null;
     }
 
     
-    public void modificarPaciente(String dni, Paciente paciente) {
+    public int modificarPaciente(String dni, Paciente paciente) throws SQLException {
 
         String sql = "UPDATE pacientes SET "
                 + "apelpac = ?, "
@@ -169,17 +147,12 @@ public class PacienteDAOMySQL implements PacienteDAO{
             // DNI original para localizar el paciente
             ps.setString(9, dni);
 
-            ps.executeUpdate();
-
-            System.out.println("Paciente modificado correctamente.");
-
-        } catch (SQLException e) {
-            System.out.println("Error al modificar el paciente: " + e.getMessage());
+            return ps.executeUpdate();
         }
     }
 
      // Buscar un paciente por DNI
-    public Paciente buscaPacdni(String dni) {
+    public Paciente buscaPacdni(String dni) throws SQLException {
 
         String sql = "SELECT dnipac, apelpac, nompac, movilpac, "
                 + " emailpac, nacpac, dirpac, propac, munipac "
@@ -210,10 +183,7 @@ public class PacienteDAOMySQL implements PacienteDAO{
                 }
             }
 
-        } catch (SQLException e) {
-            System.out.println("Error al buscar el paciente: " + e.getMessage());
         }
-
         return null;
     }
     

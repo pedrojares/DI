@@ -20,6 +20,9 @@ public class App extends Application {
         );
 
         Scene scene = new Scene(loader.load(), 1280, 800);
+        scene.getStylesheets().add(
+            getClass().getResource("/com/clase/estilos.css").toExternalForm()
+        );
         stage.setTitle("Sanitarios Teis");
         stage.setScene(scene);
         stage.setMaximized(true);

@@ -3,6 +3,7 @@ package com.clase;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +54,14 @@ public class PacientesController implements Initializable{
     @FXML 
     private TableColumn<Paciente, String> colmunipac;
 
+    private CitasController citasController;
+    private String dniPacienteOriginal;
+
     boolean pacienteExiste = false;
+
+    public void setCitasController(CitasController citasController) {
+        this.citasController = citasController;
+    }
 
     
     
@@ -306,17 +314,12 @@ public class PacientesController implements Initializable{
         String provincia=propac.getValue();
         String municipio=munipac.getValue();
 
-        System.out.println("----------------PACIENTE-------------");
-        System.out.println("DNI: "+dni);
-        System.out.println("Apellidos: "+apellidos);
-        System.out.println("Nombre: "+nombre);
-        System.out.println("Fecha Nacimiento: "+fechaNacimiento);
-        System.out.println("Telefono: "+movil);
-        System.out.println("Email: "+email);
-        System.out.println("Direccion: "+direccion);
-        System.out.println("Provincia: "+provincia);
-        System.out.println("Localidad: "+municipio);
-        System.out.println("--------------------------------------");
+        if (dni.trim().isEmpty() || apellidos.trim().isEmpty() || nombre.trim().isEmpty()
+                || fechaNacimiento == null || movil.trim().isEmpty() || email.trim().isEmpty()
+                || direccion.trim().isEmpty() || provincia == null || municipio == null) {
+            new Alert(Alert.AlertType.WARNING, "Completa todos los campos del paciente antes de guardar.").showAndWait();
+            return;
+        }
 
         Paciente paciente = new Paciente(dni, apellidos, nombre, movil, email, fechaNacimiento, direccion, provincia, municipio);
         
@@ -327,34 +330,34 @@ public class PacientesController implements Initializable{
             alert3.setContentText("¿Está seguro de que desea modificar el paciente?");
             Optional<ButtonType> result = alert3.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                PacienteDAOMySQL dao = new PacienteDAOMySQL();
-                dao.modificarPaciente(paciente.getDni(), paciente);
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Información");
-                alert.setHeaderText(null);
-                alert.setContentText("Paciente modificado correctamente");
-                alert.showAndWait();
-                pacienteExiste= false;
-                buscaPacdni();
+                try {
+                    int updated = new PacienteDAOMySQL().modificarPaciente(dniPacienteOriginal, paciente);
+                    String mensaje = updated == 0
+                            ? "No se modificó ningún paciente."
+                            : "Paciente modificado correctamente.";
+                    new Alert(Alert.AlertType.INFORMATION, mensaje).showAndWait();
+                } catch (SQLException e) {
+                    mostrarError("No se pudo modificar el paciente.", e);
+                    return;
+                }
             } else {
                 return;
             }
 
         }else{
-            PacienteDAOMySQL dao = new PacienteDAOMySQL();
-            dao.guardarPaciente(paciente);
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Información");
             alert.setHeaderText(null);
             alert.setContentText("Desea guardar el paciente?");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                dao.guardarPaciente(paciente);
-                Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
-                alert2.setTitle("Información");
-                alert2.setHeaderText(null);
-                alert2.setContentText("Paciente guardado correctamente");
-                alert2.showAndWait();
+                try {
+                    new PacienteDAOMySQL().guardarPaciente(paciente);
+                    new Alert(Alert.AlertType.INFORMATION, "Paciente guardado correctamente.").showAndWait();
+                } catch (SQLException e) {
+                    mostrarError("No se pudo guardar el paciente.", e);
+                    return;
+                }
             } else {
                 return;
             }
@@ -362,17 +365,16 @@ public class PacientesController implements Initializable{
         }
         
         cargarPacientes();
+        limpiarFormulario();
     }
 
-    @FXML 
-    private void cargarPacientes(){
-
-        PacienteDAOMySQL dao = new PacienteDAOMySQL();
-        
-        List<Paciente> pacientes = dao.cargarPacientes();
-
-        tablaPacientes.getItems().setAll(pacientes);
-
+    private void cargarPacientes() {
+        try {
+            List<Paciente> pacientes = new PacienteDAOMySQL().cargarPacientes();
+            tablaPacientes.getItems().setAll(pacientes);
+        } catch (SQLException e) {
+            mostrarError("No se pudieron cargar los pacientes.", e);
+        }
     }
 
     @FXML
@@ -391,7 +393,13 @@ public class PacientesController implements Initializable{
         munipac.setValue(null);
 
         dnipac.setStyle("");
+        dnipac.setEditable(true);
         movilpac.setStyle("");
+        pacienteExiste = false;
+        dniPacienteOriginal = null;
+        if (citasController != null) {
+            citasController.cargarDatosPaciente(null);
+        }
     }
 
     @FXML
@@ -408,24 +416,25 @@ public class PacientesController implements Initializable{
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Aviso");
             alert.setHeaderText(null);
-            alert.setContentText("Desea eliminar el paciente con DNI?");
+            alert.setContentText("¿Desea eliminar el paciente " + seleccionado.getDni() + "?");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                PacienteDAOMySQL dao = new PacienteDAOMySQL();
-                dao.eliminarPaciente(seleccionado.getDni());
-                Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
-                alert2.setTitle("Información");
-                alert2.setHeaderText(null);
-                alert2.setContentText("Paciente eliminado correctamente");
-                alert2.showAndWait();
+                try {
+                    int deleted = new PacienteDAOMySQL().eliminarPaciente(seleccionado.getDni());
+                    String mensaje = deleted == 0
+                            ? "No se encontró el paciente para eliminar."
+                            : "Paciente eliminado correctamente.";
+                    new Alert(Alert.AlertType.INFORMATION, mensaje).showAndWait();
+                    cargarPacientes();
+                    limpiarFormulario();
+                } catch (SQLException e) {
+                    mostrarError("No se pudo eliminar el paciente.", e);
+                }
 
             } else {
                 return;
             }
 
-        //Recargamos la tabla de pacientes
-        cargarPacientes();
-    
     }
 
     @FXML 
@@ -436,18 +445,24 @@ public class PacientesController implements Initializable{
 
         if(pacienteSelect == null){
             return;
-        } else {
-            pacienteExiste = true;
         }
 
-        PacienteDAOMySQL dao = new PacienteDAOMySQL();
-        Paciente paciente = dao.buscarPaciente(pacienteSelect.getDni());
+        Paciente paciente;
+        try {
+            paciente = new PacienteDAOMySQL().buscarPaciente(pacienteSelect.getDni());
+        } catch (SQLException e) {
+            mostrarError("No se pudieron cargar los datos del paciente.", e);
+            return;
+        }
 
         if(paciente == null){
             return;
         }
 
+        pacienteExiste = true;
+        dniPacienteOriginal = paciente.getDni();
         dnipac.setText(paciente.getDni());
+        dnipac.setEditable(false);
         apelpac.setText(paciente.getApellidos());
         nompac.setText(paciente.getNombre());
         movilpac.setText(paciente.getMovil());
@@ -458,18 +473,29 @@ public class PacientesController implements Initializable{
         cargarMunicipios();
         munipac.setValue(paciente.getMunicipio());
 
+        if (citasController != null) {
+            citasController.cargarDatosPaciente(paciente);
+        }
+
     }
 
 
 
     @FXML 
     private void buscaPacdni(){
-        
+        String dniBuscado = dnipac.getText().trim().toUpperCase();
 
-        PacienteDAOMySQL dao = new PacienteDAOMySQL();
-        Paciente paciente = dao.buscaPacdni(dnipac.getText());
+        Paciente paciente;
+        try {
+            paciente = new PacienteDAOMySQL().buscaPacdni(dniBuscado);
+        } catch (SQLException e) {
+            mostrarError("No se pudo buscar el paciente.", e);
+            return;
+        }
         
         if(paciente == null){
+            limpiarFormulario();
+            dnipac.setText(dniBuscado);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Información");
             alert.setHeaderText(null);
@@ -478,9 +504,11 @@ public class PacientesController implements Initializable{
             return;
         }else{
             pacienteExiste= true;
+            dniPacienteOriginal = paciente.getDni();
         }
 
         dnipac.setText(paciente.getDni());
+        dnipac.setEditable(false);
         apelpac.setText(paciente.getApellidos());
         nompac.setText(paciente.getNombre());
         movilpac.setText(paciente.getMovil());
@@ -491,7 +519,18 @@ public class PacientesController implements Initializable{
         cargarMunicipios();
         munipac.setValue(paciente.getMunicipio());
 
+        if (citasController != null) {
+            citasController.cargarDatosPaciente(paciente);
+        }
         
+    }
+
+    private void mostrarError(String mensaje, SQLException e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error de base de datos");
+        alert.setHeaderText(mensaje);
+        alert.setContentText(e.getMessage());
+        alert.showAndWait();
     }
     
 

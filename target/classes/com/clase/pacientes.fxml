@@ -14,13 +14,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" spacing="20.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.clase.PacientesController">
+<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" spacing="20.0" styleClass="vista" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.clase.PacientesController">
    <padding>
       <Insets bottom="25.0" top="25.0" />
    </padding>
    <children>
 
-            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="40.0" style="-fx-background-color: #7fffd4;" text="Xestión Pacientes" textFill="#141414">
+            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="40.0" styleClass="titulo-seccion" text="Xestión Pacientes">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -122,14 +122,14 @@
       <!-- Fila 4: Botones -->
       <HBox alignment="CENTER" spacing="25.0">
          <children>
-            <Button fx:id="btnguardarpac" mnemonicParsing="false" onAction="#guardarPaciente" prefWidth="90.0" text="Guardar" />
-            <Button fx:id="btndelpac" mnemonicParsing="false" onAction="#eliminarPaciente" prefWidth="90.0" text="Eliminar" />
+            <Button fx:id="btnguardarpac" mnemonicParsing="false" onAction="#guardarPaciente" prefWidth="90.0" styleClass="guardar" text="Guardar" />
+            <Button fx:id="btndelpac" mnemonicParsing="false" onAction="#eliminarPaciente" prefWidth="90.0" styleClass="eliminar" text="Eliminar" />
          </children>
          <VBox.margin>
             <Insets />
          </VBox.margin>
       </HBox>
-      <TableView fx:id="tablaPacientes" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="450.0" prefWidth="1100.0" style="-fx-background-color: #7fffd4;">
+      <TableView fx:id="tablaPacientes" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="450.0" prefWidth="1100.0">
         <columns>
           <TableColumn fx:id="coldnipac" editable="false" prefWidth="140.0" style="-fx-alignment: CENTER;" text="DNI" />
           <TableColumn fx:id="colapelpac" editable="false" prefWidth="200.0" text="APELLIDOS" />

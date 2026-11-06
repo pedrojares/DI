@@ -3,6 +3,7 @@ package com.clase;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -24,6 +25,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 
@@ -53,10 +55,14 @@ public class DoctoresController implements Initializable{
     @FXML 
     private TableColumn<Doctor, String> colespedoc;
     
+    private CitasController citasController;
 
     boolean doctorExiste = false;
 
-    
+    public void setCitasController(CitasController citasController) {
+        this.citasController = citasController;
+    }
+
     
     @Override 
     public void initialize(URL url, ResourceBundle rb){
@@ -95,7 +101,15 @@ public class DoctoresController implements Initializable{
         });
 
 
-        cargarDoctores();
+        ToggleGroup colegiadoGroup = new ToggleGroup();
+        coledocsi.setToggleGroup(colegiadoGroup);
+        coledocno.setToggleGroup(colegiadoGroup);
+
+        try {
+            cargarDoctores();
+        } catch (SQLException e) {
+            mostrarError("No se pudieron cargar los doctores.", e);
+        }
         cargarEspecialidades();
 
         coliddoc.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -203,52 +217,64 @@ public class DoctoresController implements Initializable{
         String especialidad=espedoc.getValue();
         boolean colegiado=coledocsi.isSelected();
         
-
-        System.out.println("----------------DOCTOR-------------");
-        System.out.println("ID: "+id);
-        System.out.println("Apellidos: "+apellidos);
-        System.out.println("Nombre: "+nombre);
-        System.out.println("Telefono: "+movil);
-        System.out.println("Email: "+email);
-        System.out.println("Especialidad: "+especialidad);
-        System.out.println("Colegiado: "+colegiado);
-        System.out.println("--------------------------------------");
+        if (apellidos.trim().isEmpty() || nombre.trim().isEmpty() || movil.trim().isEmpty()
+                || email.trim().isEmpty() || especialidad == null || especialidad.trim().isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "Completa todos los campos del doctor antes de guardar.").showAndWait();
+            return;
+        }
 
         Doctor doctor = new Doctor(id, apellidos, nombre, movil, email, especialidad, colegiado);
 
-        if(doctorExiste){
-            DoctorDAOMySQL dao = new DoctorDAOMySQL();
-            dao.modificarDoctor(doctor.getId(), doctor);
-            doctorExiste = false;
-            
-
-        }else{
-            DoctorDAOMySQL dao = new DoctorDAOMySQL();
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Información");
-            alert.setHeaderText(null);
-            alert.setContentText("¿Desea guardar el doctor?");
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                dao.guardarDoctor(doctor);
-                Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
-                infoAlert.setTitle("Información");
-                infoAlert.setHeaderText(null);
-                infoAlert.setContentText("Doctor guardado correctamente.");
-                infoAlert.showAndWait();
-            } else {
+        DoctorDAOMySQL dao = new DoctorDAOMySQL();
+        if (doctorExiste) {
+            Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmation.setTitle("Confirmación");
+            confirmation.setHeaderText(null);
+            confirmation.setContentText("¿Está seguro de que desea modificar el doctor?");
+            Optional<ButtonType> result = confirmation.showAndWait();
+            if (!result.isPresent() || result.get() != ButtonType.OK) {
                 return;
             }
-            
 
+            try {
+                int updated = dao.modificarDoctor(doctor.getId(), doctor);
+                if (updated == 0) {
+                    new Alert(Alert.AlertType.INFORMATION, "No se modificó ningún doctor.").showAndWait();
+                } else {
+                    new Alert(Alert.AlertType.INFORMATION, "Doctor modificado correctamente.").showAndWait();
+                }
+            } catch (SQLException e) {
+                mostrarError("No se pudo modificar el doctor.", e);
+                return;
+            }
+        } else {
+            Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmation.setTitle("Información");
+            confirmation.setHeaderText(null);
+            confirmation.setContentText("¿Desea guardar el doctor?");
+            Optional<ButtonType> result = confirmation.showAndWait();
+            if (!result.isPresent() || result.get() != ButtonType.OK) {
+                return;
+            }
+
+            try {
+                dao.guardarDoctor(doctor);
+                new Alert(Alert.AlertType.INFORMATION, "Doctor guardado correctamente.").showAndWait();
+            } catch (SQLException e) {
+                mostrarError("No se pudo guardar el doctor.", e);
+                return;
+            }
         }
-        
-        cargarDoctores();
+
+        limpiarFormulario();
+        try {
+            cargarDoctores();
+        } catch (SQLException e) {
+            mostrarError("El doctor se guardó, pero no se pudo actualizar la tabla.", e);
+        }
     }
 
-    @FXML 
-    private void cargarDoctores(){
-
+    private void cargarDoctores() throws SQLException {
         DoctorDAOMySQL dao = new DoctorDAOMySQL();
         List<Doctor> doctores = dao.cargarDoctores();
         tablaDoctores.getItems().setAll(doctores);
@@ -267,6 +293,10 @@ public class DoctoresController implements Initializable{
         coledocno.setSelected(false);
         espedoc.setValue(null);
         movildoc.setStyle("");
+        doctorExiste = false;
+        if (citasController != null) {
+            citasController.cargarDatosDoctor(null);
+        }
     }
 
     @FXML
@@ -279,26 +309,27 @@ public class DoctoresController implements Initializable{
         if(seleccionado == null){
             return;
         }
-        DoctorDAOMySQL dao = new DoctorDAOMySQL();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Aviso");
             alert.setHeaderText(null);
             alert.setContentText("¿Desea eliminar el doctor?");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                dao.eliminarDoctor(seleccionado.getId());
-                Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
-                infoAlert.setTitle("Información");
-                infoAlert.setHeaderText(null);
-                infoAlert.setContentText("Doctor eliminado correctamente.");
-                infoAlert.showAndWait();
+                try {
+                    int deleted = new DoctorDAOMySQL().eliminarDoctor(seleccionado.getId());
+                    if (deleted == 0) {
+                        new Alert(Alert.AlertType.INFORMATION, "No se encontró el doctor para eliminar.").showAndWait();
+                    } else {
+                        new Alert(Alert.AlertType.INFORMATION, "Doctor eliminado correctamente.").showAndWait();
+                    }
+                    cargarDoctores();
+                    limpiarFormulario();
+                } catch (SQLException e) {
+                    mostrarError("No se pudo eliminar el doctor.", e);
+                }
             } else {
                 return;
             }
-
-        //Recargamos la tabla de doctores
-        cargarDoctores();
-    
     }
 
 
@@ -308,23 +339,25 @@ public class DoctoresController implements Initializable{
     private void buscarDoctor(){
         String especialidad = espedoc.getValue();
         if (especialidad == null || especialidad.trim().isEmpty()) {
-            cargarDoctores();
+            try {
+                cargarDoctores();
+            } catch (SQLException e) {
+                mostrarError("No se pudieron cargar los doctores.", e);
+            }
             return;
         }
 
-        DoctorDAOMySQL dao = new DoctorDAOMySQL();
-        List<Doctor> doctores = dao.buscarDoctoresPorEspecialidad(especialidad);
+        List<Doctor> doctores;
+        try {
+            doctores = new DoctorDAOMySQL().buscarDoctoresPorEspecialidad(especialidad);
+        } catch (SQLException e) {
+            mostrarError("No se pudieron buscar doctores por especialidad.", e);
+            return;
+        }
         tablaDoctores.getItems().setAll(doctores);
 
         if (doctores.isEmpty()) {
-            doctorExiste = false;
-            iddoc.clear();
-            apeldoc.clear();
-            nomdoc.clear();
-            movildoc.clear();
-            maildoc.clear();
-            coledocsi.setSelected(false);
-            coledocno.setSelected(false);
+            limpiarFormulario();
             new Alert(Alert.AlertType.INFORMATION, "No hay doctores para esa especialidad.").showAndWait();
             return;
         }
@@ -343,6 +376,18 @@ public class DoctoresController implements Initializable{
         espedoc.setValue(doctor.getEspecialidad());
         coledocsi.setSelected(doctor.getColegiado());
         coledocno.setSelected(!doctor.getColegiado());
+
+        if (citasController != null) {
+            citasController.cargarDatosDoctor(doctor);
+        }
+    }
+
+    private void mostrarError(String mensaje, SQLException e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error de base de datos");
+        alert.setHeaderText(mensaje);
+        alert.setContentText(e.getMessage());
+        alert.showAndWait();
     }
 
 }

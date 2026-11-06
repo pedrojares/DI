@@ -5,11 +5,29 @@ import java.io.IOException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class VentanaController {
+public class VentanaController implements Initializable {
+
+    @FXML
+    private PacientesController pacientesViewController;
+
+    @FXML
+    private DoctoresController doctoresViewController;
+
+    @FXML
+    private CitasController citasViewController;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        pacientesViewController.setCitasController(citasViewController);
+        doctoresViewController.setCitasController(citasViewController);
+    }
     
     @FXML 
     private void salirApp(){
@@ -27,7 +45,11 @@ public class VentanaController {
 
         Stage stage = new Stage();
         stage.setTitle("Acerca de");
-        stage.setScene(new Scene(root));
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(
+            getClass().getResource("/com/clase/estilos.css").toExternalForm()
+        );
+        stage.setScene(scene);
         stage.show();
     }
 
@@ -42,4 +64,3 @@ public class VentanaController {
 
 
 }
-
