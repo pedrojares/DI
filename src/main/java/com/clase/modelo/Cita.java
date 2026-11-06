@@ -51,6 +51,16 @@ public class Cita {
         this.especialidad = especialidad;
     }
 
+    public Cita(int idcita, String citadnipac, int citaiddoc,
+                LocalDate fechacita, LocalTime horacita,
+                String motivo, String diagnostico, String tratamiento,
+                String estadocita, String doctor, String especialidad) {
+        this(idcita, citadnipac, citaiddoc, fechacita, horacita,
+                motivo, diagnostico, tratamiento, estadocita);
+        this.doctor = doctor;
+        this.especialidad = especialidad;
+    }
+
     // Getters y Setters
 
     public int getIdcita() {

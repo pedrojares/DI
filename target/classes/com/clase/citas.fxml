@@ -78,7 +78,7 @@
       </HBox>
       <HBox alignment="CENTER" spacing="12.0">
          <children>
-            <Button mnemonicParsing="false" prefHeight="20.0" prefWidth="85.0" styleClass="guardar" text="Guardar">
+            <Button mnemonicParsing="false" onAction="#guardarCita" prefHeight="20.0" prefWidth="85.0" styleClass="guardar" text="Guardar">
                <HBox.margin>
                   <Insets right="20.0" />
                </HBox.margin>
@@ -98,14 +98,14 @@
       </Label>
       <HBox alignment="CENTER" maxWidth="1.7976931348623157E308">
          <children>
-            <TableView fx:id="tablaCitas" prefHeight="220.0" prefWidth="1180.0">
+            <TableView fx:id="tablaCitas" prefHeight="220.0" prefWidth="1000.0">
                <columns>
-                  <TableColumn fx:id="colIdCita" prefWidth="100.0" text="ID cita" />
-                  <TableColumn fx:id="colDoctor" prefWidth="230.0" text="Doctor" />
-                  <TableColumn fx:id="colEspecialidad" prefWidth="220.0" text="Especialidad" />
-                  <TableColumn fx:id="colDia" prefWidth="170.0" text="Día" />
-                  <TableColumn fx:id="colHora" prefWidth="140.0" text="Hora" />
-                  <TableColumn fx:id="colEstado" prefWidth="160.0" text="Estado" />
+                  <TableColumn fx:id="colIdCita" prefWidth="90.0" style="-fx-alignment: CENTER;" text="ID cita" />
+                  <TableColumn fx:id="colDoctor" prefWidth="250.0" style="-fx-alignment: CENTER;" text="Doctor" />
+                  <TableColumn fx:id="colEspecialidad" prefWidth="280.0" style="-fx-alignment: CENTER;" text="Especialidad" />
+                  <TableColumn fx:id="colDia" prefWidth="140.0" style="-fx-alignment: CENTER;" text="Día" />
+                  <TableColumn fx:id="colHora" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Hora" />
+                  <TableColumn fx:id="colEstado" prefWidth="140.0" style="-fx-alignment: CENTER;" text="Estado" />
                </columns>
             </TableView>
          </children>

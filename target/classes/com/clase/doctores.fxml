@@ -92,7 +92,7 @@
                </HBox.margin>
             </RadioButton>
             <Label text="Especialidad:" />
-            <ComboBox fx:id="espedoc" prefHeight="25.0" prefWidth="192.0" />
+            <ComboBox fx:id="espedoc" prefHeight="38.0" prefWidth="340.0" />
             <Button fx:id="btnBuscardoc" mnemonicParsing="false" onAction="#buscarDoctor">
                <graphic>
                   <ImageView fitHeight="21.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
