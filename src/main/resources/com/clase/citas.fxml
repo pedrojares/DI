@@ -96,9 +96,9 @@
             <Insets left="30.0" right="30.0" />
          </VBox.margin>
       </Label>
-      <HBox alignment="CENTER" maxWidth="1.7976931348623157E308">
+      <HBox alignment="CENTER" prefHeight="220.0" maxWidth="1.7976931348623157E308">
          <children>
-            <TableView fx:id="tablaCitas" prefHeight="220.0" prefWidth="1000.0">
+            <TableView fx:id="tablaCitas" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="1000.0">
                <columns>
                   <TableColumn fx:id="colIdCita" prefWidth="90.0" style="-fx-alignment: CENTER;" text="ID cita" />
                   <TableColumn fx:id="colDoctor" prefWidth="250.0" style="-fx-alignment: CENTER;" text="Doctor" />

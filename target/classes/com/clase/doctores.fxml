@@ -121,7 +121,7 @@
             <Insets />
          </VBox.margin>
       </HBox>
-      <TableView fx:id="tablaDoctores" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="450.0" prefWidth="1100.0">
+      <TableView fx:id="tablaDoctores" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="1099.0">
         <columns>
           <TableColumn fx:id="coliddoc" editable="false" prefWidth="140.0" style="-fx-alignment: CENTER;" text="ID" />
           <TableColumn fx:id="colapeldoc" editable="false" prefWidth="272.0" text="APELLIDOS" />

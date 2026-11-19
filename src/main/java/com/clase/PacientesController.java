@@ -67,9 +67,7 @@ public class PacientesController implements Initializable{
     
     @Override 
     public void initialize(URL url, ResourceBundle rb){
-
-
-        
+        tablaPacientes.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         // Comprobar DNI al perder el foco
         dnipac.focusedProperty().addListener((observable, oldValue, newValue) -> {

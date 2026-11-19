@@ -102,6 +102,7 @@ public class CitasController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        tablaCitas.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         idCita.setEditable(false);
         idDoctor.setEditable(false);
         colIdCita.setCellValueFactory(new PropertyValueFactory<>("idcita"));
