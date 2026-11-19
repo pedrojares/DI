@@ -14,7 +14,7 @@ public class Cita {
     private String motivo;
     private String diagnostico;
     private String tratamiento;
-    private String estadocita;
+    private String estado;
     private String doctor;
     private String especialidad;
 
@@ -26,7 +26,7 @@ public class Cita {
     public Cita(int idcita, String citadnipac, int citaiddoc,
                 LocalDate fechacita, LocalTime horacita,
                 String motivo, String diagnostico,
-                String tratamiento, String estadocita) {
+                String tratamiento, String estado) {
 
         this.idcita = idcita;
         this.citadnipac = citadnipac;
@@ -36,17 +36,17 @@ public class Cita {
         this.motivo = motivo;
         this.diagnostico = diagnostico;
         this.tratamiento = tratamiento;
-        this.estadocita = estadocita;
+        this.estado = estado;
     }
 
     public Cita(int idcita, int citaiddoc, LocalDate fechacita,
-                LocalTime horacita, String estadocita,
+                LocalTime horacita, String estado,
                 String doctor, String especialidad) {
         this.idcita = idcita;
         this.citaiddoc = citaiddoc;
         this.fechacita = fechacita;
         this.horacita = horacita;
-        this.estadocita = estadocita;
+        this.estado = estado;
         this.doctor = doctor;
         this.especialidad = especialidad;
     }
@@ -54,9 +54,9 @@ public class Cita {
     public Cita(int idcita, String citadnipac, int citaiddoc,
                 LocalDate fechacita, LocalTime horacita,
                 String motivo, String diagnostico, String tratamiento,
-                String estadocita, String doctor, String especialidad) {
+                String estado, String doctor, String especialidad) {
         this(idcita, citadnipac, citaiddoc, fechacita, horacita,
-                motivo, diagnostico, tratamiento, estadocita);
+                motivo, diagnostico, tratamiento, estado);
         this.doctor = doctor;
         this.especialidad = especialidad;
     }
@@ -127,12 +127,12 @@ public class Cita {
         this.tratamiento = tratamiento;
     }
 
-    public String getEstadocita() {
-        return estadocita;
+    public String getEstado() {
+        return estado;
     }
 
-    public void setEstadocita(String estadocita) {
-        this.estadocita = estadocita;
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     public String getDoctor() {

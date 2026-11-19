@@ -17,7 +17,7 @@ public class CitaDAOMySQL {
 
     public int guardarCita(Cita cita) throws SQLException {
         String sql = "INSERT INTO citas "
-                + "(dnipac, iddoc, fechacita, horacita, motivo, diagnostico, tratamiento, estado) "
+                + "(citadnipac, citaiddoc, fechacita, horacita, motivo, diagnostico, tratamiento, estado) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conexion = ConexionMySQL.getConexion();
@@ -29,7 +29,7 @@ public class CitaDAOMySQL {
             ps.setString(5, cita.getMotivo());
             ps.setString(6, cita.getDiagnostico());
             ps.setString(7, cita.getTratamiento());
-            ps.setString(8, cita.getEstadocita());
+            ps.setString(8, cita.getEstado());
             ps.executeUpdate();
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
@@ -43,7 +43,7 @@ public class CitaDAOMySQL {
     }
 
     public void modificarCita(Cita cita) throws SQLException {
-        String sql = "UPDATE citas SET dnipac = ?, iddoc = ?, fechacita = ?, horacita = ?, "
+        String sql = "UPDATE citas SET citadnipac = ?, citaiddoc = ?, fechacita = ?, horacita = ?, "
                 + "motivo = ?, diagnostico = ?, tratamiento = ?, estado = ? "
                 + "WHERE idcita = ?";
 
@@ -56,7 +56,7 @@ public class CitaDAOMySQL {
             ps.setString(5, cita.getMotivo());
             ps.setString(6, cita.getDiagnostico());
             ps.setString(7, cita.getTratamiento());
-            ps.setString(8, cita.getEstadocita());
+            ps.setString(8, cita.getEstado());
             ps.setInt(9, cita.getIdcita());
             ps.executeUpdate();
         }
@@ -66,7 +66,7 @@ public class CitaDAOMySQL {
             Integer idCitaExcluir) throws SQLException {
         Set<LocalTime> horasOcupadas = new TreeSet<>();
         String sql = "SELECT horacita FROM citas "
-                + "WHERE iddoc = ? AND fechacita = ? "
+                + "WHERE citaiddoc = ? AND fechacita = ? "
                 + "AND LOWER(COALESCE(estado, '')) <> 'anulada' "
                 + "AND (? IS NULL OR idcita <> ?)";
 
@@ -94,12 +94,12 @@ public class CitaDAOMySQL {
 
     public List<Cita> cargarCitasPaciente(String dniPaciente) throws SQLException {
         List<Cita> citas = new ArrayList<>();
-        String sql = "SELECT c.idcita, c.dnipac, c.iddoc, c.fechacita, c.horacita, "
+        String sql = "SELECT c.idcita, c.citadnipac, c.citaiddoc, c.fechacita, c.horacita, "
                 + "c.motivo, c.diagnostico, c.tratamiento, c.estado, "
                 + "d.apeldoc, d.nomdoc, d.espedoc "
                 + "FROM citas c "
-                + "JOIN doctores d ON d.iddoc = c.iddoc "
-                + "WHERE c.dnipac = ? "
+                + "JOIN doctores d ON d.iddoc = c.citaiddoc "
+                + "WHERE c.citadnipac = ? "
                 + "ORDER BY c.fechacita, c.horacita";
 
         try (Connection conexion = ConexionMySQL.getConexion();
@@ -110,8 +110,8 @@ public class CitaDAOMySQL {
                 while (rs.next()) {
                     Cita cita = new Cita(
                             rs.getInt("idcita"),
-                            rs.getString("dnipac"),
-                            rs.getInt("iddoc"),
+                            rs.getString("citadnipac"),
+                            rs.getInt("citaiddoc"),
                             rs.getDate("fechacita").toLocalDate(),
                             java.time.LocalTime.parse(rs.getString("horacita")),
                             rs.getString("motivo"),

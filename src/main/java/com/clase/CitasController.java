@@ -109,7 +109,7 @@ public class CitasController implements Initializable {
         colEspecialidad.setCellValueFactory(new PropertyValueFactory<>("especialidad"));
         colDia.setCellValueFactory(new PropertyValueFactory<>("fechacita"));
         colHora.setCellValueFactory(new PropertyValueFactory<>("horacita"));
-        colEstado.setCellValueFactory(new PropertyValueFactory<>("estadocita"));
+        colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
         fechaCita.valueProperty().addListener((observable, anterior, fecha) -> actualizarHorasDisponibles());
 
         tablaCitas.getSelectionModel().selectedItemProperty().addListener((observable, anterior, cita) -> {
@@ -149,9 +149,9 @@ public class CitasController implements Initializable {
         horaCita.setValue(cita.getHoracita().format(FORMATO_HORA));
         diagnosticoCita.setText(cita.getDiagnostico() == null ? "" : cita.getDiagnostico());
         tratamientoCita.setText(cita.getTratamiento() == null ? "" : cita.getTratamiento());
-        chkpendiente.setSelected("Pendiente".equalsIgnoreCase(cita.getEstadocita()));
-        chkatendida.setSelected("Atendida".equalsIgnoreCase(cita.getEstadocita()));
-        chkanulada.setSelected("Anulada".equalsIgnoreCase(cita.getEstadocita()));
+        chkpendiente.setSelected("Pendiente".equalsIgnoreCase(cita.getEstado()));
+        chkatendida.setSelected("Atendida".equalsIgnoreCase(cita.getEstado()));
+        chkanulada.setSelected("Anulada".equalsIgnoreCase(cita.getEstado()));
     }
 
     private void limpiarDatosCita() {
