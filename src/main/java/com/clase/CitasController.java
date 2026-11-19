@@ -73,8 +73,6 @@ public class CitasController implements Initializable {
 
     public void cargarDatosPaciente(Paciente paciente) {
         pacienteSeleccionado = paciente;
-        idDoctor.clear();
-        doctorSeleccionadoId = null;
         citadnipac.clear();
         limpiarDatosCita();
 
@@ -83,6 +81,7 @@ public class CitasController implements Initializable {
         }
 
         citadnipac.setText(paciente.getDni());
+        cargarCitasPacienteSeleccionado();
     }
 
     public void cargarDatosDoctor(Doctor doctor) {
