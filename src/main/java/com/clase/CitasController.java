@@ -170,6 +170,15 @@ public class CitasController implements Initializable {
         actualizarHorasDisponibles();
     }
 
+    @FXML
+    private void limpiarFormulario() {
+        pacienteSeleccionado = null;
+        doctorSeleccionadoId = null;
+        idDoctor.clear();
+        citadnipac.clear();
+        limpiarDatosCita();
+    }
+
     private void actualizarHorasDisponibles() {
         horaCita.getItems().clear();
         horaCita.setValue(null);

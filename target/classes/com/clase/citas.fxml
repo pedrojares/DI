@@ -34,9 +34,9 @@
             <TextField fx:id="idDoctor" />
             <Label text="DNI Paciente:" />
             <TextField fx:id="citadnipac" prefHeight="25.0" prefWidth="266.0" />
-            <Button mnemonicParsing="false">
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#limpiarFormulario" prefHeight="34.0" prefWidth="39.0">
                <graphic>
-                  <ImageView blendMode="MULTIPLY" fitHeight="34.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView blendMode="MULTIPLY" fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../img/recargar.png" />
                      </image>
