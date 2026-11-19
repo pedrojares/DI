@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.5.final using JasperReports Library version 6.21.5-74d586df47b25dbd05bd0957999819196e59934a  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="pacientes" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a5417f27-17de-4dfa-bec2-c7590f023059">
+	<parameter name="LOGO_URL" class="java.net.URL"/>
+	<queryString>
+		<![CDATA[SELECT dnipac, apelpac, nompac, movilpac
+			FROM pacientes
+			ORDER BY apelpac, nompac]]>
+	</queryString>
+	<field name="dnipac" class="java.lang.String"/>
+	<field name="apelpac" class="java.lang.String"/>
+	<field name="nompac" class="java.lang.String"/>
+	<field name="movilpac" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="81" splitType="Stretch">
+			<image>
+				<reportElement x="52" y="0" width="50" height="50" uuid="4bcc7c6a-fe8e-4697-b75d-59a1fe7ab916"/>
+				<imageExpression><![CDATA[$P{LOGO_URL}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="50" y="50" width="65" height="21" uuid="964d3c52-bb4b-48c3-ae56-1c89d9200b08"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sanidad Teis]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="95" splitType="Stretch">
+			<staticText>
+				<reportElement x="10" y="75" width="80" height="20" uuid="6e571bfd-446f-4050-b413-39c9c0972146"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Código]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="102" y="75" width="140" height="20" uuid="f9c8d33d-7268-4a14-bd41-e2dfc2d5b6f2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Apellidos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="262" y="75" width="140" height="20" uuid="8df5ed2d-0633-4341-bdf9-20f37be4a0cc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nombre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="420" y="75" width="125" height="20" uuid="d10d6376-d24d-4da0-831d-2d4fdd7d32f7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Móvil]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="6" width="158" height="30" uuid="a43cfde9-2e2c-4ebd-b560-5189126f465c"/>
+				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Serif" size="14"/>
+				</textElement>
+				<text><![CDATA[LISTADO PACIENTES]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="2" y="65" width="550" height="1" uuid="f9557dba-5abe-4c42-9ccd-cd5affaae619">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="15" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="6" width="550" height="1" uuid="1d4a4512-4eef-45a9-a88e-579249529983">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="15" y="2" width="70" height="20" uuid="f1f2b6b8-6525-44d4-8440-ad708dec0f5a">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{dnipac}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="115" y="2" width="145" height="20" uuid="100e2b0d-298b-4aa1-9a55-731b0216feee">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{apelpac}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="270" y="2" width="150" height="20" uuid="5f89a180-2468-4b00-924d-568c39c29972">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nompac}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="433" y="2" width="100" height="20" uuid="4ff26fc0-1e49-49b3-bc0a-c73de277db14">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{movilpac}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

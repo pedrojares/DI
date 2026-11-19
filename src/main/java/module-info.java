@@ -4,6 +4,8 @@ module com.clase {
     requires javafx.fxml;
     requires com.google.gson;
     requires java.sql;
+    requires java.desktop;
+    requires jasperreports;
 
     opens com.clase to javafx.fxml, com.google.gson;
     

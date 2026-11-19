@@ -100,6 +100,12 @@ public class DoctoresController implements Initializable{
             }
         });
 
+        maildoc.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                comprobarEmail();
+            }
+        });
+
 
         ToggleGroup colegiadoGroup = new ToggleGroup();
         coledocsi.setToggleGroup(colegiadoGroup);
@@ -202,6 +208,17 @@ public class DoctoresController implements Initializable{
         return telefono.matches("[67][0-9]{8}");
     }
 
+    private void comprobarEmail() {
+        String email = maildoc.getText().trim();
+        if (ValidacionEmail.esValido(email)) {
+            maildoc.setText(email);
+            maildoc.setStyle("");
+        } else {
+            maildoc.setStyle("-fx-border-color: red;");
+            maildoc.clear();
+        }
+    }
+
 
     
 
@@ -213,13 +230,18 @@ public class DoctoresController implements Initializable{
         String apellidos=apeldoc.getText();
         String nombre=nomdoc.getText();
         String movil=movildoc.getText();
-        String email=maildoc.getText();
+        String email=maildoc.getText().trim();
         String especialidad=espedoc.getValue();
         boolean colegiado=coledocsi.isSelected();
         
         if (apellidos.trim().isEmpty() || nombre.trim().isEmpty() || movil.trim().isEmpty()
                 || email.trim().isEmpty() || especialidad == null || especialidad.trim().isEmpty()) {
             new Alert(Alert.AlertType.WARNING, "Completa todos los campos del doctor antes de guardar.").showAndWait();
+            return;
+        }
+
+        if (!ValidacionEmail.esValido(email)) {
+            new Alert(Alert.AlertType.WARNING, "Introduce un correo electrónico válido para el doctor.").showAndWait();
             return;
         }
 
@@ -293,6 +315,7 @@ public class DoctoresController implements Initializable{
         coledocno.setSelected(false);
         espedoc.setValue(null);
         movildoc.setStyle("");
+        maildoc.setStyle("");
         doctorExiste = false;
         if (citasController != null) {
             citasController.cargarDatosDoctor(null);
@@ -373,6 +396,7 @@ public class DoctoresController implements Initializable{
         nomdoc.setText(doctor.getNombre());
         movildoc.setText(doctor.getMovil());
         maildoc.setText(doctor.getEmail());
+        maildoc.setStyle("");
         espedoc.setValue(doctor.getEspecialidad());
         coledocsi.setSelected(doctor.getColegiado());
         coledocno.setSelected(!doctor.getColegiado());

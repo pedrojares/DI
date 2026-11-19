@@ -12,6 +12,8 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.clase.informes.imprimirPacientes;
+
 public class VentanaController implements Initializable {
 
     @FXML
@@ -27,6 +29,11 @@ public class VentanaController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         pacientesViewController.setCitasController(citasViewController);
         doctoresViewController.setCitasController(citasViewController);
+    }
+
+    @FXML
+    private void generarInformePacientes() {
+        imprimirPacientes.mostrar();
     }
     
     @FXML 

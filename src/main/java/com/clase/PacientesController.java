@@ -101,6 +101,12 @@ public class PacientesController implements Initializable{
             }
         });
 
+        emailpac.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                comprobarEmail();
+            }
+        });
+
         cargarProvincias();
 
         propac.setOnAction(e -> cargarMunicipios());
@@ -209,6 +215,17 @@ public class PacientesController implements Initializable{
         return telefono.matches("[67][0-9]{8}");
     }
 
+    private void comprobarEmail() {
+        String email = emailpac.getText().trim();
+        if (ValidacionEmail.esValido(email)) {
+            emailpac.setText(email);
+            emailpac.setStyle("");
+        } else {
+            emailpac.setStyle("-fx-border-color: red;");
+            emailpac.clear();
+        }
+    }
+
     private void cargarProvincias() {
 
         // Abrimos el fichero JSON que está dentro de resources
@@ -309,7 +326,7 @@ public class PacientesController implements Initializable{
         String nombre=nompac.getText();
         LocalDate fechaNacimiento=nacpac.getValue();
         String movil=movilpac.getText();
-        String email=emailpac.getText();
+        String email=emailpac.getText().trim();
         String direccion=dirpac.getText();
         String provincia=propac.getValue();
         String municipio=munipac.getValue();
@@ -318,6 +335,11 @@ public class PacientesController implements Initializable{
                 || fechaNacimiento == null || movil.trim().isEmpty() || email.trim().isEmpty()
                 || direccion.trim().isEmpty() || provincia == null || municipio == null) {
             new Alert(Alert.AlertType.WARNING, "Completa todos los campos del paciente antes de guardar.").showAndWait();
+            return;
+        }
+
+        if (!ValidacionEmail.esValido(email)) {
+            new Alert(Alert.AlertType.WARNING, "Introduce un correo electrónico válido para el paciente.").showAndWait();
             return;
         }
 
@@ -395,6 +417,7 @@ public class PacientesController implements Initializable{
         dnipac.setStyle("");
         dnipac.setEditable(true);
         movilpac.setStyle("");
+        emailpac.setStyle("");
         pacienteExiste = false;
         dniPacienteOriginal = null;
         if (citasController != null) {
@@ -467,6 +490,7 @@ public class PacientesController implements Initializable{
         nompac.setText(paciente.getNombre());
         movilpac.setText(paciente.getMovil());
         emailpac.setText(paciente.getEmail());
+        emailpac.setStyle("");
         nacpac.setValue(paciente.getNacimiento());
         dirpac.setText(paciente.getDireccion());
         propac.setValue(paciente.getProvincia());
@@ -513,6 +537,7 @@ public class PacientesController implements Initializable{
         nompac.setText(paciente.getNombre());
         movilpac.setText(paciente.getMovil());
         emailpac.setText(paciente.getEmail());
+        emailpac.setStyle("");
         nacpac.setValue(paciente.getNacimiento());
         dirpac.setText(paciente.getDireccion());
         propac.setValue(paciente.getProvincia());
